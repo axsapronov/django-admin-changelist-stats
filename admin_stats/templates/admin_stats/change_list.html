@@ -1,0 +1,36 @@
+{% extends "admin/change_list.html" %}
+{% load i18n %}
+
+{% block extrastyle %}
+    {{ block.super }}
+    <style type="text/css">
+        #admin-stats table {
+            width: auto;
+        }
+        #admin-stats table th{
+            text-align: center;
+        }
+    </style>
+{% endblock extrastyle %}
+
+{% block result_list %}
+    {{ block.super }}
+    {% block stats %}
+        {% if cl.result_count %}
+            {% load admin_stats_tags %}
+            {% collect_stats for cl as stats %}
+            {% if stats %}
+                <div id="admin-stats">
+                    <table>
+                        <thead><tr><th colspan="2">{% trans "Stats" %}</th></tr></thead>
+                        <tbody>
+                            {% for label, value in stats %}
+                                <tr><td>{{ label }}</td><td>{{ value|safe }}</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+        {% endif %}
+    {% endblock %}
+{% endblock result_list %}
