@@ -121,12 +121,14 @@ the given field, e.g.:
 
 .. code-block:: html+django
 
+    {% load admin_stats_tags %}
     {{ myqueriset|avg_of:'field' }}
 
 or:
 
 .. code-block:: html+django
-
+    
+    {% load admin_stats_tags %}
     {% with objects|sum_of:'hours' as total_hours %}
         Total hours: {{ total_hours }}
     {% endwith %}

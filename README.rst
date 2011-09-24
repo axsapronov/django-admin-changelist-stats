@@ -114,16 +114,14 @@ This application provides a set of aggrgation template filters too:
     - count_of
 
 Each one is used over a queryset and return the aggregation of
-the given field, e.g.:
+the given field, e.g.::
 
-.. code-block:: html+django
-
+    {% load admin_stats_tags %}
     {{ myqueriset|avg_of:'field' }}
 
-or:
+or::
 
-.. code-block:: html+django
-
+    {% load admin_stats_tags %}
     {% with objects|sum_of:'hours' as total_hours %}
         Total hours: {{ total_hours }}
     {% endwith %}
