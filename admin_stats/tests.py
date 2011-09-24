@@ -1,6 +1,7 @@
 import unittest
 
 from django.db import models as django_models
+from django.template import Template, Context
 
 from admin_stats import admin, models
 from admin_stats.templatetags import admin_stats_tags
@@ -42,7 +43,7 @@ class AdminStatsTestMixin(object):
 
 
 class ModelTestCase(unittest.TestCase, AdminStatsTestMixin):
-    def setUp(self):
+    def setUp(self):  
         self.create_instances(1, 3, 5, 8, 13)
 
     def test_aggregates(self):
@@ -66,6 +67,34 @@ class ModelTestCase(unittest.TestCase, AdminStatsTestMixin):
         ]
         results = [i(None, queryset, data) for i in stats]
         self.assertEqual([tuple(i) for i in results], expected_results)
+        
+    def tearDown(self):
+        self.clean()
+
+
+class TemplatetagsTestCase(unittest.TestCase, AdminStatsTestMixin):
+    def setUp(self):
+        self.create_instances(1, 3, 5, 8, 13)
+
+    def render(self, template, context_dict):
+        context = Context(context_dict.copy())
+        return Template(template).render(context)
+
+    def test_utils(self):
+        template = u"""
+            {% load admin_stats_tags %}
+            {{ queryset|avg_of:'value' }}
+            {{ queryset|sum_of:'value' }}
+            {{ queryset|min_of:'value' }}
+            {{ queryset|max_of:'value' }}
+            {{ queryset|count_of:'value' }}
+        """
+        context_dict = {
+            'queryset': self.all(),
+        }
+        html = self.render(template, context_dict)
+        expected = [u'6.0', u'30', u'1', u'13', u'5']
+        self.assertEqual(html.split(), expected)
         
     def tearDown(self):
         self.clean()

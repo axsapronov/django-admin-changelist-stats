@@ -1,6 +1,7 @@
 import re
 
 from django import template
+from django.db.models import Avg, Sum, Min, Max, Count
 
 from admin_stats import models
 
@@ -12,7 +13,9 @@ COLLECT_STATS_EXPRESSION = re.compile(COLLECT_STATS_PATTERN)
 @register.tag
 def collect_stats(parser, token):
     """
-    Usage::
+    Usage:
+
+    .. code-block:: html+django
     
         {% collect_stats for cl as varname %}
     
@@ -60,3 +63,30 @@ class CollectStatsNode(template.Node):
         # calling all stats callbales
         context[self.varname] = [i(request, objects, data) for i in callables]
         return u''
+
+
+# UTILITY FILTERS (actually not used by the app)
+
+def _get_aggregation_filter(func):
+    """
+    This is a filter factory that creates the following filters:
+        - avg_of
+        - sum_of
+        - min_of
+        - max_of
+        - count_of
+    Each one is used over a queryset and return the aggregation of
+    the given field, e.g.:
+
+    .. code-block:: html+django
+
+        {{ myqueriset|avg_of:'field' }}
+    """
+    def aggregation_filter(queryset, field):
+        aggregations = queryset.aggregate(aggregated=func(field))
+        return aggregations['aggregated']
+    return aggregation_filter
+
+for func in Avg, Sum, Min, Max, Count:
+    filter_name = '%s_of' % (func.name.lower())
+    register.filter(name=filter_name)(_get_aggregation_filter(func))

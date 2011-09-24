@@ -103,3 +103,31 @@ short description of the value returned, e.g.::
 
 The *value* returned by custom stats is considered safe, so it can be an
 html string too.
+
+
+Template filters
+~~~~~~~~~~~~~~~~
+
+This application provides a set of aggrgation template filters too:
+
+    - avg_of
+    - sum_of
+    - min_of
+    - max_of
+    - count_of
+
+Each one is used over a queryset and return the aggregation of
+the given field, e.g.:
+
+.. code-block:: html+django
+
+    {{ myqueriset|avg_of:'field' }}
+
+or:
+
+.. code-block:: html+django
+
+    {% with objects|sum_of:'hours' as total_hours %}
+        Total hours: {{ total_hours }}
+    {% endwith %}
+
