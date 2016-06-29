@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import re
 
 from django import template
@@ -29,13 +30,13 @@ def collect_stats(parser, token):
         tag_name, tag_args = token.contents.split(None, 1)
     except ValueError:
         message = "%r tag requires arguments" % token.contents.split()[0]
-        raise template.TemplateSyntaxError, message
+        raise template.TemplateSyntaxError(message)
 
-    # use regexp to catch args    
+        # use regexp to catch args
     match = COLLECT_STATS_EXPRESSION.match(tag_args)
     if match is None:
         message = "Invalid arguments for %r tag" % token.contents.split()[0]
-        raise template.TemplateSyntaxError, message
+        raise template.TemplateSyntaxError(message)
 
     # call the node
     return CollectStatsNode(*match.groups())
