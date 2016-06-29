@@ -1,6 +1,7 @@
+# -*- coding: utf-8 -*-
+
 from django.contrib import admin
 
-from admin_stats.models import Avg, Sum, Min, Max
 
 class StatsAdmin(admin.ModelAdmin):
     """

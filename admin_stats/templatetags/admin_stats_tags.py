@@ -10,6 +10,7 @@ register = template.Library()
 COLLECT_STATS_PATTERN = r'^for\s+(?P<cl>[\w\.]+)\s+as\s+(?P<var_name>\w+)'
 COLLECT_STATS_EXPRESSION = re.compile(COLLECT_STATS_PATTERN)
 
+
 @register.tag
 def collect_stats(parser, token):
     """
@@ -29,25 +30,26 @@ def collect_stats(parser, token):
     except ValueError:
         message = "%r tag requires arguments" % token.contents.split()[0]
         raise template.TemplateSyntaxError, message
-        
+
     # use regexp to catch args    
     match = COLLECT_STATS_EXPRESSION.match(tag_args)
     if match is None:
         message = "Invalid arguments for %r tag" % token.contents.split()[0]
         raise template.TemplateSyntaxError, message
-    
+
     # call the node
     return CollectStatsNode(*match.groups())
-    
-    
+
+
 class CollectStatsNode(template.Node):
     """
     Insert into context the stats for the current queryset.
     """
+
     def __init__(self, cl, varname):
         self.cl = template.Variable(cl)
         self.varname = varname
-    
+
     def render(self, context):
         # retreiving queryset from admin changelist
         cl = self.cl.resolve(context)
@@ -82,10 +84,13 @@ def _get_aggregation_filter(func):
 
         {{ myqueriset|avg_of:'field' }}
     """
+
     def aggregation_filter(queryset, field):
         aggregations = queryset.aggregate(aggregated=func(field))
         return aggregations['aggregated']
+
     return aggregation_filter
+
 
 for func in Avg, Sum, Min, Max, Count:
     filter_name = '%s_of' % (func.name.lower())

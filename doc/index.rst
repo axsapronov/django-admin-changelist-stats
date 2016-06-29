@@ -29,7 +29,7 @@ Add the request context processor in your *settings.py*, e.g.::
     from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS
     TEMPLATE_CONTEXT_PROCESSORS += (
          'django.core.context_processors.request',
-    )    
+    )
 
 Add ``'admin_stats'`` to the ``INSTALLED_APPS`` in your *settings.py*.
 

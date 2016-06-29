@@ -1,5 +1,8 @@
+# -*- coding: utf-8 -*-
+
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+
 
 class BaseAggregation(object):
     """
@@ -13,7 +16,7 @@ class BaseAggregation(object):
     def __init__(self, field, alone=False):
         self.field = field
         self.alone = alone
-    
+
     def get_aggregates(self):
         return [i(self.field) for i in self._aggregates]
 
